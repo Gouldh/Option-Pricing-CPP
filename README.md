@@ -32,5 +32,14 @@ Ensure that you have the `Boost` C++ Libraries installed, as the code uses `boos
 ## License
 This project is open-sourced under the MIT License. For more information, please refer to the `LICENSE` file.
 
+## Sample Output
+Here's an example of running the code with sample input parameters:
+
+```plaintext
+Black-Scholes Price: $7.26
+Heston Model Price: $6.46
+Merton Jump Diffusion Price: $6.48
+```
+
 **Author**: Hunter Gould
 **Date**: 11/26/2023
