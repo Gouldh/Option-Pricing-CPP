@@ -1,8 +1,12 @@
 #include <iostream>
 #include <cmath>
-#include <random>
 #include <vector>
 #include <algorithm>
+#include <boost/random.hpp>
+#include <boost/random/normal_distribution.hpp>
+#include <boost/random/poisson_distribution.hpp>
+
+namespace br = boost::random;
 
 // -----------------------------------------------------------------------------------
 // Author: Hunter Gould
@@ -15,8 +19,7 @@
 //              of financial modeling and computational finance.
 // -----------------------------------------------------------------------------------
 
-
-// Normal CDF using an approximation
+// Normal CDF
 double normCDF(double value) {
     return 0.5 * std::erfc(-value * std::sqrt(0.5));
 }
@@ -28,11 +31,10 @@ double blackScholes(double S, double X, double T, double r, double sigma) {
     return S * normCDF(d1) - X * std::exp(-r * T) * normCDF(d2);
 }
 
-// Heston Model (Stochastic Volatility)
-double hestonModel(double S_0, double X, double T, double r, double kappa, double theta, double sigma_v, double rho, double v_0, int num_simulations = 100, int num_steps = 100) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::normal_distribution<> d(0, 1);
+// Heston Model
+double hestonModel(double S_0, double X, double T, double r, double kappa, double theta, double sigma_v, double rho, double v_0, int num_simulations = 10000, int num_steps = 100) {
+    br::mt19937 gen;
+    br::normal_distribution<> d(0, 1);
 
     double dt = T / num_steps;
     double option_payoff_sum = 0.0;
@@ -55,12 +57,10 @@ double hestonModel(double S_0, double X, double T, double r, double kappa, doubl
 }
 
 // Merton Jump Diffusion Model
-double mertonJumpDiffusion(double S_0, double X, double T, double r, double sigma, double lambda_jump, double m_jump, double delta_jump, int num_simulations = 100, int num_steps = 100) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::normal_distribution<> normal_dist(0, 1);
-    std::poisson_distribution<> poisson_dist(lambda_jump * T / num_steps);
-    std::normal_distribution<> jump_dist(m_jump, delta_jump);
+double mertonJumpDiffusion(double S_0, double X, double T, double r, double sigma, double lambda_jump, double m_jump, double delta_jump, int num_simulations = 10000, int num_steps = 100) {
+    br::mt19937 gen;
+    br::normal_distribution<> normal_dist(0, 1);
+    br::poisson_distribution<> poisson_dist(lambda_jump * T / num_steps);
 
     double dt = T / num_steps;
     std::vector<double> S_t(num_simulations, S_0);
@@ -72,7 +72,7 @@ double mertonJumpDiffusion(double S_0, double X, double T, double r, double sigm
             int jumps = poisson_dist(gen);
             double jump_sum = 0.0;
             for (int j = 0; j < jumps; ++j) {
-                jump_sum += jump_dist(gen);
+                jump_sum += m_jump + delta_jump * z;
             }
             S_t[sim] *= std::exp((r - 0.5 * sigma * sigma) * dt + sigma * std::sqrt(dt) * z + jump_sum);
         }
@@ -88,30 +88,30 @@ double mertonJumpDiffusion(double S_0, double X, double T, double r, double sigm
 int main() {
     // Parameters for the Black-Scholes model
     double S = 100;    // Current stock price
-    double X = 100;    // Strike price
+    double X = 110;    // Strike price
     double T = 1;      // Time to expiration in years
-    double r = 0.05;   // Risk-free interest rate
-    double sigma = 0.2;// Volatility
+    double r = 0.03;   // Risk-free interest rate
+    double sigma = 0.25;// Volatility
 
     // Black-Scholes Price
     double bsPrice = blackScholes(S, X, T, r, sigma);
     std::cout << "Black-Scholes Price: " << bsPrice << std::endl;
 
     // Parameters for the Heston model
-    double kappa = 3.0;    // Mean reversion rate
-    double theta = 0.04;   // Long-term mean of volatility
-    double sigma_v = 0.1;  // Volatility of volatility
-    double rho = -0.7;     // Correlation between the asset return and volatility
-    double v_0 = 0.04;     // Initial variance
+    double kappa = 2.0;    // Mean reversion rate
+    double theta = 0.06;   // Long-term mean of volatility
+    double sigma_v = 0.2;  // Volatility of volatility
+    double rho = -0.5;     // Correlation between the asset return and volatility
+    double v_0 = 0.05;     // Initial variance
 
     // Heston Model Price
     double hestonPrice = hestonModel(S, X, T, r, kappa, theta, sigma_v, rho, v_0);
     std::cout << "Heston Model Price: " << hestonPrice << std::endl;
 
     // Parameters for the Merton Jump Diffusion model
-    double lambda_jump = 0.5;  // Jump intensity
-    double m_jump = -0.05;     // Mean jump size
-    double delta_jump = 0.1;   // Jump-size volatility
+    double lambda_jump = 0.75;  // Jump intensity
+    double m_jump = -0.06;      // Mean jump size
+    double delta_jump = 0.12;   // Jump-size volatility
 
     // Merton Jump Diffusion Price
     double mertonPrice = mertonJumpDiffusion(S, X, T, r, sigma, lambda_jump, m_jump, delta_jump);
