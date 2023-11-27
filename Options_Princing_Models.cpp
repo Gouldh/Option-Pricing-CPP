@@ -2,6 +2,7 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <iomanip>
 #include <boost/random.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/poisson_distribution.hpp>
@@ -95,7 +96,7 @@ int main() {
 
     // Black-Scholes Price
     double bsPrice = blackScholes(S, X, T, r, sigma);
-    std::cout << "Black-Scholes Price: " << bsPrice << std::endl;
+    std::cout << "Black-Scholes Price: $" << std::fixed << std::setprecision(2) << bsPrice << std::endl;
 
     // Parameters for the Heston model
     double kappa = 2.0;    // Mean reversion rate
@@ -106,7 +107,7 @@ int main() {
 
     // Heston Model Price
     double hestonPrice = hestonModel(S, X, T, r, kappa, theta, sigma_v, rho, v_0);
-    std::cout << "Heston Model Price: " << hestonPrice << std::endl;
+    std::cout << "Heston Model Price: $" << std::fixed << std::setprecision(2) << hestonPrice << std::endl;
 
     // Parameters for the Merton Jump Diffusion model
     double lambda_jump = 0.75;  // Jump intensity
@@ -115,7 +116,7 @@ int main() {
 
     // Merton Jump Diffusion Price
     double mertonPrice = mertonJumpDiffusion(S, X, T, r, sigma, lambda_jump, m_jump, delta_jump);
-    std::cout << "Merton Jump Diffusion Price: " << mertonPrice << std::endl;
+    std::cout << "Merton Jump Diffusion Price: $" << std::fixed << std::setprecision(2) << mertonPrice << std::endl;
 
     return 0;
 }
