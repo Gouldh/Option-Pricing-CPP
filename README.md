@@ -1,13 +1,16 @@
 # Option Pricing Models in C++
 
 ## Project Overview
-This repository represents an experimental endeavor aimed at translating my previously completed financial analysis tools from Python to C++. The primary objective is to re-implement option pricing models, encompassing the Black-Scholes Model, the Heston Model, and the Merton Jump Diffusion Model. This project serves as a personal exploration, allowing me to assess the intricacies and performance disparities between C++ and Python within the realm of computational finance.
+This repository represents an experimental endeavor aimed at translating my previously completed financial analysis tools from Python to C++. The primary objective is to re-implement option pricing models, encompassing the Black-Scholes Model, the Heston Model, and the Merton Jump Diffusion Model. This project serves as a personal exploration, allowing me to assess the intricacies and performance disparities between C++ and Python within the realm of computational finance. The [python version](https://github.com/Gouldh/Option-Pricing-Heatmap) of the project does include a heatmap that is not included here.
 
 ## Features
 - **Black-Scholes Model**: Implementation of the Black-Scholes formula for option pricing in C++.
 - **Heston Model**: Implementation of the Heston stochastic volatility model for option pricing, incorporating mean reversion and volatility of volatility.
 - **Merton Jump Diffusion Model**: Implementation of the Merton Jump Diffusion model for option pricing, considering abrupt price changes with jumps.
 - **Monte Carlo Simulation**: Utilizes Monte Carlo simulation to calculate option prices for more accurate financial modeling.
+
+## Libraries
+- `boost`: Allows for implementation of various different random variables. Used in generating prices for the Heston model, and the Merton Jump Diffusion Model.
 
 ## Installation
 To set up this C++ project, follow these steps:
