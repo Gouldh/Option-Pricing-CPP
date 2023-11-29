@@ -41,5 +41,5 @@ Heston Model Price: $6.46
 Merton Jump Diffusion Price: $6.48
 ```
 
-**Author**: Hunter Gould
+**Author**: Hunter Gould        
 **Date**: 11/26/2023
